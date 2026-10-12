@@ -24,6 +24,10 @@ as a ready-to-plug execution environment for host tools.
 - **Host integration.** An `Environment` value satisfies the execution hook that
   host tools expose (such as go-themida's `Runner`), with no import coupling in
   either direction.
+- **Prefix and path helpers.** `Config.WithBase` layers a configuration over a
+  shared installation, `SamePrefix` reports whether two prefixes resolve to the
+  same location (symlinks and the Wine default included), and `HostPath`
+  normalizes Windows-style separators for the host.
 - **No external dependencies.** Standard library only.
 
 ## Requirements

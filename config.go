@@ -48,6 +48,32 @@ func (c Config) WithDefaults() Config {
 	return c
 }
 
+// WithBase returns a copy of the configuration with each unset field filled in
+// from base, so a specific configuration can inherit a shared installation while
+// overriding individual fields. The receiver's set fields always win. It is
+// typically chained before [Config.WithDefaults]:
+//
+//	effective := job.WithBase(service).WithDefaults()
+func (c Config) WithBase(base Config) Config {
+	if c.Binary == "" {
+		c.Binary = base.Binary
+	}
+
+	if c.PathBinary == "" {
+		c.PathBinary = base.PathBinary
+	}
+
+	if c.ServerBinary == "" {
+		c.ServerBinary = base.ServerBinary
+	}
+
+	if c.Prefix == "" {
+		c.Prefix = base.Prefix
+	}
+
+	return c
+}
+
 // Resolve returns a copy of the configuration with every tool path that contains
 // a separator made absolute, so a relative tool path is not re-resolved against
 // a different working directory once the caller changes into one. Bare command
@@ -96,7 +122,7 @@ func (c Config) Env(base []string) ([]string, error) {
 	}
 
 	if c.Prefix != "" {
-		prefix, err := filepath.Abs(hostPath(c.Prefix))
+		prefix, err := filepath.Abs(HostPath(c.Prefix))
 		if err != nil {
 			return nil, fmt.Errorf("resolve Wine prefix: %w", err)
 		}

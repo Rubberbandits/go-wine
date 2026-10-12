@@ -24,6 +24,27 @@ func TestConfigWithDefaults(t *testing.T) {
 	)
 }
 
+func TestConfigWithBaseInheritsUnsetFields(t *testing.T) {
+	t.Parallel()
+
+	base := Config{
+		Binary:     "/opt/wine/bin/wine",
+		PathBinary: "/opt/wine/bin/winepath",
+		Prefix:     "base",
+	}
+	got := Config{Prefix: "job"}.WithBase(base)
+
+	requireEqual(t, got.Binary, base.Binary, "inherited binary")
+	requireEqual(t, got.PathBinary, base.PathBinary, "inherited path binary")
+	requireEqual(t, got.Prefix, "job", "receiver prefix wins")
+}
+
+func TestHostPathNormalizesSeparators(t *testing.T) {
+	t.Parallel()
+
+	requireEqual(t, HostPath(`a\b\c`), filepath.FromSlash("a/b/c"), "windows separators normalized")
+}
+
 func TestConfigResolveMakesSeparatorPathsAbsolute(t *testing.T) {
 	t.Parallel()
 
