@@ -1,0 +1,47 @@
+version: "2"
+
+run:
+  timeout: 5m
+  tests: true
+
+linters:
+  default: all
+  # Keep the current replacements enabled instead of running duplicate deprecated checks.
+  disable:
+    - exhaustruct
+    - gomodguard
+    - wsl
+  settings:
+    exhaustive:
+      # A default branch explicitly handles unsupported reflection kinds.
+      default-signifies-exhaustive: true
+    exhaustruct_v5:
+      allow-empty: true
+      # These API types deliberately support partial configuration and zero values.
+      optional-patterns:
+        - '^github.com/Rubberbandits/go-wine\.(Config|Environment)$'
+        - '^syscall\.SysProcAttr$'
+    tagliatelle:
+      case:
+        rules:
+          # Preserve the public Wine configuration's native snake_case JSON keys.
+          json: snake
+    nolintlint:
+      require-explanation: true
+      require-specific: true
+  exclusions:
+    presets: []
+
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+    - goimports
+    - golines
+    - swaggo
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  uniq-by-line: false
